@@ -1,9 +1,37 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Hello</title>
-  </head>
-  <body>
-    <p>crab assets test</p>
-  </body>
+<head></head>
+<body>
+<div id="content-placeholder"></div>
+<div id="game-target"></div>
+
+<script>
+  const target = document.getElementById('game-target');
+  
+  fetch('https://cdn.jsdelivr.net/gh/201212-rgb/onetime/index.html')
+    .then(res => res.text())
+    .then(data => {
+      // 1. Inject the HTML structure
+      target.innerHTML = data;
+
+      // 2. Force the scripts to actually execute
+      const scripts = target.querySelectorAll("script");
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement("script");
+        
+        // Copy all attributes (src, type, etc.)
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        
+        // Copy the internal code if it's not an external src
+        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+        
+        // Replace the "dead" script with the "live" one
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+    });
+</script>
+</body>
+
 </html>
