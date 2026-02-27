@@ -2,8 +2,8 @@
  {
     "id": 99000,
     "name": "Crab Assets Test",
-    "cover": "{CRAB_COVER_URL}/0.png",
-    "url": "{CRAB_HTML_URL}/0.html",
+    "cover": "{CRAB_COVER_URL}/covers/crab-0.png",
+    "url": "{CRAB_HTML_URL}/html/crab-0.html",
     "author": "SirCrabapple99",
     "authorLink": "https://github.com/SirCrabapple99/crab-assets/"
  }
