@@ -1,8 +1,9 @@
 name: Check crab-assets commits
 
 on:
-  schedule:
-    - cron: "*/10 * * * *" # run every 10 minutes
+  push:
+    branches:
+      - main
   workflow_dispatch: # allow manual run
 
 jobs:
