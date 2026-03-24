@@ -2,9 +2,17 @@
  {
     "id": 99000,
     "name": "Balatro",
-    "cover": "{CRAB_COVER_URL}/crab-0.png",
-    "url": "{CRAB_HTML_URL}/crab-0.html",
+    "cover": "{CRAB_COVER_URL}/Balatro.png",
+    "url": "{CRAB_HTML_URL}/-Balatro.html",
     "author": "LocalThunk, W0W53R",
     "authorLink": "https://store.steampowered.com/app/2379780/Balatro/"
+ }, 
+ {
+    "id": 99001,
+    "name": "A Game About Feeding A Black Hole (Full Game)",
+    "cover": "{CRAB_COVER_URL}/AGAFABH.png",
+    "url": "{CRAB_HTML_URL}/AGAFABH.html",
+    "author": "Aarimous, Thornityco",
+    "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
  }
 ]
