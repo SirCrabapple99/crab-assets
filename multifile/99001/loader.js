@@ -12,7 +12,7 @@ async function loadPck() {
         'AGAFABH.pck.part.ai',
     ];
 
-    const base = 'https://cdn.jsdelivr.net/gh/YOURUSER/YOURREPO@main/';
+    const base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets@main/multifile/99001';
 
     const parts = await Promise.all(
         partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
