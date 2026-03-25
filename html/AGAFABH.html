@@ -140,6 +140,33 @@ async function loadPck() {
     
     pckBlobUrl = URL.createObjectURL(new Blob([merged], { type: 'application/octet-stream' }));
 }
+
+let sideWasmBlobUrl = null;
+
+async function loadSideWasm() {
+    const partNames = [
+        'AGAFABH.side.wasm.part.aa',
+        'AGAFABH.side.wasm.part.ab',
+		'AGAFABH.side.wasm.part.ac'
+    ];
+
+    const base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets@main/multifile/99001/';
+
+    const parts = await Promise.all(
+        partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
+    );
+    
+    const totalLength = parts.reduce((sum, b) => sum + b.byteLength, 0);
+    const merged = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const buf of parts) {
+        merged.set(new Uint8Array(buf), offset);
+        offset += buf.byteLength;
+    }
+    
+    sideWasmBlobUrl = URL.createObjectURL(new Blob([merged], { type: 'application/wasm' }));
+}
+
 		</script>
 		<script src="AGAFABH.js"></script>
 		<script>
@@ -230,24 +257,22 @@ const engine = new Engine(GODOT_CONFIG);
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
-		setStatusMode('progress');
-		loadPck().then(() => engine.startGame({
-			'mainPack': pckBlobUrl,
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-
-		})).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
-	}
-}());
+    setStatusMode('progress');
+    Promise.all([loadPck(), loadSideWasm()]).then(() => engine.startGame({
+        'mainPack': pckBlobUrl,
+        'onProgress': function (current, total) {
+            if (current > 0 && total > 0) {
+                statusProgress.value = current;
+                statusProgress.max = total;
+            } else {
+                statusProgress.removeAttribute('value');
+                statusProgress.removeAttribute('max');
+            }
+        },
+    })).then(() => {
+        setStatusMode('hidden');
+    }, displayFailureNotice);
+}}());
 		</script>
 	</body>
 </html>
