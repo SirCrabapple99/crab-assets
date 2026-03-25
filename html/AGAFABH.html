@@ -110,9 +110,63 @@ body {
 			<div id="status-notice"></div>
 		</div>
 		<script>
-			// the pack combiner is ai slop because im stupid
+			// this whole script tag is ai slop because im very dumb and lazy
+			let sideWasmPromise = null;
+
+const originalFetch = window.fetch;
+window.fetch = function(url, ...args) {
+    if (typeof url === 'string' && url.includes('side.wasm')) {
+        if (!sideWasmPromise) {
+            sideWasmPromise = loadSideWasm();
+        }
+        return sideWasmPromise.then(() => originalFetch(sideWasmBlobUrl, ...args));
+    }
+    return originalFetch(url, ...args);
+};
+
+			function loadInWorker(partNames, base, mimeType) {
+    return new Promise((resolve, reject) => {
+        const workerCode = `
+            self.onmessage = async function(e) {
+                const { partNames, base, mimeType } = e.data;
+                try {
+                    const parts = await Promise.all(
+                        partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
+                    );
+                    const totalLength = parts.reduce((sum, b) => sum + b.byteLength, 0);
+                    const merged = new Uint8Array(totalLength);
+                    let offset = 0;
+                    for (const buf of parts) {
+                        merged.set(new Uint8Array(buf), offset);
+                        offset += buf.byteLength;
+                    }
+                    self.postMessage({ buffer: merged.buffer }, [merged.buffer]);
+                } catch(err) {
+                    self.postMessage({ error: err.message });
+                }
+            };
+        `;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const worker = new Worker(URL.createObjectURL(blob));
+        worker.onmessage = (e) => {
+            if (e.data.error) {
+                reject(new Error(e.data.error));
+            } else {
+                const blobUrl = URL.createObjectURL(new Blob([e.data.buffer], { type: mimeType }));
+                resolve(blobUrl);
+            }
+            worker.terminate();
+        };
+        worker.postMessage({ partNames, base, mimeType });
+    });
+}
+
+const base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets@main/multifile/99001/';
+let pckBlobUrl = null;
+let sideWasmBlobUrl = null;
+
 async function loadPck() {
-    const partNames = [
+    pckBlobUrl = await loadInWorker([
         'AGAFABH.pck.part.aa',
         'AGAFABH.pck.part.ab',
         'AGAFABH.pck.part.ac',
@@ -122,51 +176,16 @@ async function loadPck() {
         'AGAFABH.pck.part.ag',
         'AGAFABH.pck.part.ah',
         'AGAFABH.pck.part.ai',
-    ];
-
-    const base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets@main/multifile/99001/';
-
-    const parts = await Promise.all(
-        partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
-    );
-    
-    const totalLength = parts.reduce((sum, b) => sum + b.byteLength, 0);
-    const merged = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const buf of parts) {
-        merged.set(new Uint8Array(buf), offset);
-        offset += buf.byteLength;
-    }
-    
-    pckBlobUrl = URL.createObjectURL(new Blob([merged], { type: 'application/octet-stream' }));
+    ], base, 'application/octet-stream');
 }
-
-let sideWasmBlobUrl = null;
 
 async function loadSideWasm() {
-    const partNames = [
+    sideWasmBlobUrl = await loadInWorker([
         'AGAFABH.side.wasm.part.aa',
         'AGAFABH.side.wasm.part.ab',
-		'AGAFABH.side.wasm.part.ac'
-    ];
-
-    const base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets@main/multifile/99001/';
-
-    const parts = await Promise.all(
-        partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
-    );
-    
-    const totalLength = parts.reduce((sum, b) => sum + b.byteLength, 0);
-    const merged = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const buf of parts) {
-        merged.set(new Uint8Array(buf), offset);
-        offset += buf.byteLength;
-    }
-    
-    sideWasmBlobUrl = URL.createObjectURL(new Blob([merged], { type: 'application/wasm' }));
+        'AGAFABH.side.wasm.part.ac',
+    ], base, 'application/wasm');
 }
-
 		</script>
 		<script src="AGAFABH.js"></script>
 		<script>
