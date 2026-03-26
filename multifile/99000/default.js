@@ -1,3 +1,42 @@
+// this file part recombining script is 99% ai slop because i genuinely cant figure out how tf i recombine the output from split
+const originalFetch = window.fetch;
+function loadInWorker(partNames, base, mimeType) {
+    return new Promise((resolve, reject) => {
+        const workerCode = `
+            self.onmessage = async function(e) {
+                const { partNames, base, mimeType } = e.data;
+                try {
+                    const parts = await Promise.all(
+                        partNames.map(name => fetch(base + name).then(r => r.arrayBuffer()))
+                    );
+                    const totalLength = parts.reduce((sum, b) => sum + b.byteLength, 0);
+                    const merged = new Uint8Array(totalLength);
+                    let offset = 0;
+                    for (const buf of parts) {
+                        merged.set(new Uint8Array(buf), offset);
+                        offset += buf.byteLength;
+                    }
+                    self.postMessage({ buffer: merged.buffer }, [merged.buffer]);
+                } catch(err) {
+                    self.postMessage({ error: err.message });
+                }
+            };
+        `;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const worker = new Worker(URL.createObjectURL(blob));
+        worker.onmessage = (e) => {
+            if (e.data.error) {
+                reject(new Error(e.data.error));
+            } else {
+                resolve(e.data.buffer);
+            }
+            worker.terminate();
+        };
+        worker.postMessage({ partNames, base, mimeType });
+    });
+}
+
+// slop ends here
 // check if browser is prepped
 let prepState = window.localStorage.getItem('balatroPrepState')
 console.log(prepState)
@@ -25,10 +64,16 @@ let defaultEXE
 async function downloadGameData() {
     // load the default exe
     try {
+        base = document.querySelector('head > base').getAttribute('href') + '/'
         console.log('downloading default exe')
-        const response = await fetch("./balatro.exe")
-        const blob = await response.blob()
-        defaultEXE = new File([blob], "balatro.exe", { type: blob.type })
+        const blob = await loadInWorker([
+            'balatro.part.aa',
+            'balatro.part.ab',
+            'balatro.part.ac',
+            'balatro.part.ad',
+        ], base, 'application/octet-stream');
+        await new Promise(resolve => setTimeout(resolve, 100));
+        defaultEXE = new File([blob], "balatro.exe", { type: 'application/octet-stream' })
         console.log('successfully downloaded default exe')
         buildDefault()
 
