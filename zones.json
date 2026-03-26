@@ -2,8 +2,8 @@
  {
     "id": 99000,
     "name": "Balatro",
-    "cover": "{CRAB_COVER_URL}/Balatro.png",
-    "url": "{CRAB_HTML_URL}/Balatro.html",
+    "cover": "{CRAB_COVER_URL}/balatro.png",
+    "url": "{CRAB_HTML_URL}/balatro.html",
     "author": "LocalThunk, W0W53R",
     "authorLink": "https://store.steampowered.com/app/2379780/Balatro/"
  }, 
