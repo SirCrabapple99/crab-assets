@@ -60,11 +60,11 @@ document.addEventListener('keydown', function (e) {
 })
 
 let defaultEXE
+let base = 'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/'
 
 async function downloadGameData() {
     // load the default exe
     try {
-        base = document.querySelector('head > base').getAttribute('href') + '/'
         console.log('downloading default exe')
         const blob = await loadInWorker([
             'balatro.part.aa',
