@@ -25,30 +25,121 @@
 
 <body><canvas id="canvas"></canvas>
     <script>
-        (async () => {
-            const chunks = [
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_aa',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ab',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ac',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ad',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ae',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_af',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ag',
-                'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ah'
-            ];
+(async () => {
+    // pure slop but I forgive you
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'large-js-loader';
+    loadingDiv.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); color: white; font-family: Arial, sans-serif;
+        display: flex; align-items: center; justify-content: center; flex-direction: column;
+        z-index: 9999; font-size: 18px;
+    `;
+    loadingDiv.innerHTML = `
+        <div>Loading Balatro (118 MB)...</div>
+        <div id="status" style="margin-top: 15px; font-size: 14px; opacity: 0.8;">Fetching chunks...</div>
+    `;
+    document.body.appendChild(loadingDiv);
 
-            const parts = await Promise.all(chunks.map(url => fetch(url).then(r => r.text())));
-            const combined = parts.join('\n');
+    const updateStatus = (msg) => {
+        const el = document.getElementById('status');
+        if (el) el.textContent = msg;
+        console.log(msg);
+    };
 
-            const blob = new Blob([combined], { type: 'application/javascript' });
-            const blobUrl = URL.createObjectURL(blob);
+    const chunks = [
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_aa',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ab',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ac',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ad',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ae',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_af',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ag',
+        'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ah'
+    ];
 
-            const script = document.createElement('script');
-            script.src = blobUrl;
-            document.head.appendChild(script);
-        })();
-    </script>
-    <script>(async () => { const d = await getSource(); Module = { INITIAL_MEMORY: 2 ** 28, canvas: canvas, printErr: console.error, arguments: ["game.love"] }; Module.preRun = [function () { Module.addRunDependency("fp game.love"); var ptr = Module.getMemory(d.length); Module['HEAPU8'].set(d, ptr); Module.FS_createDataFile('/', "game.love", d, true, true, true); Module.removeRunDependency("fp game.love") }]; Love(Module) })()</script>
+    try {
+        updateStatus('Fetching 8 chunks in parallel...');
+
+        const parts = await Promise.all(chunks.map(url => 
+            fetch(url).then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+                return r.text();
+            })
+        ));
+
+        const combined = parts.join('');
+        updateStatus(`Recombined ${parts.length} chunks → ${(combined.length / (1024*1024)).toFixed(1)} MB`);
+
+        const blob = new Blob([combined], { type: 'application/javascript' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const script = document.createElement('script');
+        script.src = blobUrl;
+        script.async = false;
+
+        script.onload = () => {
+            updateStatus('Chunk download finished — now parsing/executing large JS (this can take 10–40+ seconds)...');
+            URL.revokeObjectURL(blobUrl);
+        };
+
+        document.head.appendChild(script);
+        updateStatus('Waiting for game engine to initialize...');
+
+        const waitForEngine = async () => {
+            let attempts = 0;
+            const maxAttempts = 600;
+
+            while (attempts < maxAttempts) {
+                if (typeof getSource === 'function' && 
+                    typeof Love === 'function' && 
+                    typeof canvas !== 'undefined') {
+                    
+                    updateStatus('✅ Engine ready — starting Balatro');
+                    return true;
+                }
+
+                if (attempts % 50 === 0) {
+                    updateStatus(`Still initializing... (${(attempts * 0.1).toFixed(1)}s elapsed)`);
+                }
+
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+
+            throw new Error('Engine did not initialize within 60 seconds. Check console for errors in the large JS file.');
+        };
+
+        await waitForEngine();
+        const d = await getSource();
+
+        Module = {
+            INITIAL_MEMORY: 2 ** 28,
+            canvas: canvas,
+            printErr: console.error,
+            arguments: ["game.love"]
+        };
+
+        Module.preRun = [function () {
+            Module.addRunDependency("fp game.love");
+            var ptr = Module.getMemory(d.length);
+            Module['HEAPU8'].set(d, ptr);
+            Module.FS_createDataFile('/', "game.love", d, true, true, true);
+            Module.removeRunDependency("fp game.love");
+        }];
+
+        Love(Module);
+        console.log('Balatro / Love2D started');
+        setTimeout(() => {
+            if (loadingDiv.parentNode) loadingDiv.parentNode.removeChild(loadingDiv);
+        }, 1000);
+
+    } catch (err) {
+        console.error('Critical error:', err);
+        updateStatus('Error: ' + err.message);
+    }
+})();
+</script>
 </body>
 
 </html>
