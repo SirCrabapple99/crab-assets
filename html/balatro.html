@@ -7,7 +7,7 @@
     <base href="https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/">
     <script>const PREFIX = "Balatro_vanilla_"; const originalOpen = indexedDB.open; const originalDeleteDatabase = indexedDB.deleteDatabase; indexedDB.open = function (name, version) { const prefixedName = PREFIX + name; return version !== undefined ? originalOpen.call(this, prefixedName, version) : originalOpen.call(this, prefixedName); }; indexedDB.deleteDatabase = function (name) { const prefixedName = PREFIX + name; return originalDeleteDatabase.call(this, prefixedName); };</script>
     <script src="love.min.js"></script>
-    <title>Love.js</title>
+    <title>Balatro</title>
     <style>
         #canvas {
             position: absolute;
@@ -39,7 +39,7 @@
     `;
     loadingDiv.innerHTML = `
         <div>Loading Balatro (118 MB)...</div>
-        <div id="status" style="margin-top: 15px; font-size: 14px; opacity: 0.8;">Fetching chunks...</div>
+        <div id="status" style="margin-top: 15px; font-size: 14px; opacity: 0.8;">Downloading game data... this might take a while</div>
     `;
     document.body.appendChild(loadingDiv);
 
