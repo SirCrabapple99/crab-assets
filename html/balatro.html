@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
     <base href="https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/">
     <script>const PREFIX = "Balatro_vanilla_"; const originalOpen = indexedDB.open; const originalDeleteDatabase = indexedDB.deleteDatabase; indexedDB.open = function (name, version) { const prefixedName = PREFIX + name; return version !== undefined ? originalOpen.call(this, prefixedName, version) : originalOpen.call(this, prefixedName); }; indexedDB.deleteDatabase = function (name) { const prefixedName = PREFIX + name; return originalDeleteDatabase.call(this, prefixedName); };</script>
     <script src="love.min.js"></script>
@@ -41,12 +43,6 @@
     `;
     document.body.appendChild(loadingDiv);
 
-    const updateStatus = (msg) => {
-        const el = document.getElementById('status');
-        if (el) el.textContent = msg;
-        console.log(msg);
-    };
-
     const chunks = [
         'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_aa',
         'https://cdn.jsdelivr.net/gh/SirCrabapple99/crab-assets/multifile/99000/chunk_ab',
@@ -59,8 +55,6 @@
     ];
 
     try {
-        updateStatus('Fetching 8 chunks in parallel...');
-
         const parts = await Promise.all(chunks.map(url => 
             fetch(url).then(r => {
                 if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
@@ -69,8 +63,6 @@
         ));
 
         const combined = parts.join('');
-        updateStatus(`Recombined ${parts.length} chunks → ${(combined.length / (1024*1024)).toFixed(1)} MB`);
-
         const blob = new Blob([combined], { type: 'application/javascript' });
         const blobUrl = URL.createObjectURL(blob);
 
@@ -79,12 +71,10 @@
         script.async = false;
 
         script.onload = () => {
-            updateStatus('Chunk download finished — now parsing/executing large JS (this can take 10–40+ seconds)...');
             URL.revokeObjectURL(blobUrl);
         };
 
         document.head.appendChild(script);
-        updateStatus('Waiting for game engine to initialize...');
 
         const waitForEngine = async () => {
             let attempts = 0;
@@ -94,13 +84,8 @@
                 if (typeof getSource === 'function' && 
                     typeof Love === 'function' && 
                     typeof canvas !== 'undefined') {
-                    
-                    updateStatus('✅ Engine ready — starting Balatro');
-                    return true;
-                }
 
-                if (attempts % 50 === 0) {
-                    updateStatus(`Still initializing... (${(attempts * 0.1).toFixed(1)}s elapsed)`);
+                    return true;
                 }
 
                 await new Promise(r => setTimeout(r, 100));
@@ -136,7 +121,6 @@
 
     } catch (err) {
         console.error('Critical error:', err);
-        updateStatus('Error: ' + err.message);
     }
 })();
 </script>
