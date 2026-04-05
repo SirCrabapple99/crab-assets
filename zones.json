@@ -14,5 +14,13 @@
     "url": "{CRAB_HTML_URL}/AGAFABH.html",
     "author": "Aarimous, Thornityco",
     "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
+ },
+ {
+    "id": 99002,
+    "name": "RATSHOT Demo",
+    "cover": "{CRAB_COVER_URL}/RATSHOT.png",
+    "url": "{CRAB_HTML_URL}/RATSHOT.html",
+    "author": "Aarimous, Thornityco",
+    "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
  }
 ]
