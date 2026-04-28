@@ -7,25 +7,14 @@
   gtag('config', 'G-L7856P3VNT');
 </script><html>
 
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script type="module">
-        import erudaIndexedDB from 'https://cdn.jsdelivr.net/npm/eruda-indexeddb@latest/+esm'
-        eruda.init()
-        eruda.add(erudaIndexedDB)
-    </script>
-
     <script>
       window.gameconfig = {
         name: "Legend of Zelda, The - Majora's Mask",
-        url: "https://cdn.jsdelivr.net/gh/tumstech/n64_rom@master/LegendofZeldaMajorasMask.z64",
+        url: "https://cdn.jsdelivr.net/gh/SirCrabapple99/n64_rom/LegendofZeldaTheMajoraMask/LegendofZeldaTheMajoraMask.z64",
         core: "n64",
         min: 1,
-        max: 2,
+        max: 3,
       };
     </script>
     <script>
@@ -121,11 +110,11 @@
           EJS_gameName = window.gameconfig.name;
           EJS_color = "#0064ff";
           EJS_startOnLoaded = true;
-          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/genizy/emu@master/";
+          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@master/data/";
           EJS_gameUrl = gameUrl;
           const script = document.createElement("script");
           script.src =
-            "https://cdn.jsdelivr.net/gh/genizy/emu@master/loader.js";
+            "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@master/data/loader.js";
           document.body.appendChild(script);
         })
         .catch((error) => {
