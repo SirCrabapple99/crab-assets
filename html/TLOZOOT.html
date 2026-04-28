@@ -8,20 +8,13 @@
 </script><html>
 
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script type="module">
-        import erudaIndexedDB from 'https://cdn.jsdelivr.net/npm/eruda-indexeddb@latest/+esm'
-        eruda.init()
-        eruda.add(erudaIndexedDB)
-    </script>
-
     <script>
       window.gameconfig = {
-        name: "Legend of Zelda, The - Ocarina of Time (USA)",
-        url: "https://cdn.jsdelivr.net/gh/tumstech/n64_rom@master/LegendofZeldaOcarinaOfTime.z64",
+        name: "The Legend of Zelda: The Ocarina Of Time",
+        url: "https://cdn.jsdelivr.net/gh/SirCrabapple99/n64_rom/LegendofZeldaTheOcarinaofTime/LegendofZeldaTheOcarinaofTime.z64",
         core: "n64",
         min: 1,
-        max: 2,
+        max: 3,
       };
     </script>
     <script>
@@ -117,11 +110,11 @@
           EJS_gameName = window.gameconfig.name;
           EJS_color = "#0064ff";
           EJS_startOnLoaded = true;
-          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/genizy/emu@master/";
+          EJS_pathtodata = "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@master/data/";
           EJS_gameUrl = gameUrl;
           const script = document.createElement("script");
           script.src =
-            "https://cdn.jsdelivr.net/gh/genizy/emu@master/loader.js";
+            "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@master/data/loader.js";
           document.body.appendChild(script);
         })
         .catch((error) => {
@@ -132,4 +125,4 @@
     </script>
   
 </body>
-</html> 
+</html>
