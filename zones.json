@@ -22,5 +22,21 @@
     "url": "{CRAB_HTML_URL}/RATSHOT.html",
     "author": "Aarimous, Thornityco",
     "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
- }
+ }, 
+ {
+    "id": 99004,
+    "name": "The Legend Of Zelda: Majoras Mask",
+    "cover": "{CRAB_COVER_URL}/TLOZMM.png",
+    "url": "{CRAB_HTML_URL}/TLOZMM.html",
+    "author": "Nintendo",
+    "authorLink": "https://nintendo.com/"
+ },
+ {
+    "id": 99003,
+    "name": "The Legend Of Zelda: Ocarina of Time",
+    "cover": "{CRAB_COVER_URL}/TLOZOOT.png",
+    "url": "{CRAB_HTML_URL}/TLOZOOT.html",
+    "author": "Nintendo",
+    "authorLink": "https://nintendo.com/"
+ }, 
 ]
