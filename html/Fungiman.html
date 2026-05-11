@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <base href="https://cdn.jsdelivr.net/SirCrabapple99/crab-assets/multifile/Fungiman/">
+    <meta charset="utf-8">
+    <title>Füngiman</title>
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      body { background-color: black; margin: 0; padding: 0; overflow: hidden; }
+      #unity-container { width: 100vw; height: 100vh; }
+      #unity-canvas { width: 100% !important; height: 100% !important; display: block; }
+      #loading-text {
+        position: absolute; top: 20px; left: 0; right: 0;
+        color: white; font-size: 48px; font-family: cursive; text-align: center;
+        font-weight: bold;
+        background: linear-gradient(270deg,#ff0000,#ff7f00,#ffff00,#00ff00,#0000ff,#4b0082,#8f00ff);
+        background-size: 400% 400%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: rainbow 3s ease infinite;
+      }
+      @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-text">LOADING...</div>
+
+    <script>
+      const loadingText = document.querySelector("#loading-text");
+      let loadedBytes = 0;
+      const TOTAL_MB = "56.89";
+
+      async function fetchWithProgress(url) {
+        const response = await fetch(url);
+        const reader = response.body.getReader();
+        const chunks = [];
+        let received = 0;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          received += value.length;
+          loadedBytes += value.length;
+          chunks.push(value);
+          const mbDone = (loadedBytes / (1024 * 1024)).toFixed(2);
+          loadingText.textContent = `LOADING... ${mbDone} MB / ${TOTAL_MB} MB`;
+        }
+        const fullBuffer = new Uint8Array(received);
+        let offset = 0;
+        for (const chunk of chunks) {
+          fullBuffer.set(chunk, offset);
+          offset += chunk.length;
+        }
+        return fullBuffer.buffer;
+      }
+
+      async function mergeFiles(fileParts, cacheKey, mimeType) {
+        const cache = await caches.open("fungiman-cache");
+        const cached = await cache.match(cacheKey);
+        if (cached) {
+          const blob = await cached.blob();
+          return URL.createObjectURL(blob);
+        }
+        const buffers = await Promise.all(fileParts.map(p => fetchWithProgress(p)));
+        const mergedBlob = new Blob(buffers, { type: mimeType });
+        await cache.put(cacheKey, new Response(mergedBlob));
+        return URL.createObjectURL(mergedBlob);
+      }
+
+      function getParts(file, start, end) {
+        const parts = [];
+        for (let i = start; i <= end; i++) {
+          parts.push(file + ".part" + String(i).padStart(3, "0"));
+        }
+        return parts;
+      }
+
+      (async () => {
+        const dataUrl = await mergeFiles(
+          getParts("Build/Brotli.data.unityweb", 1, 4),
+          "Brotli.data.unityweb",
+          "application/octet-stream"
+        );
+
+        const config = {
+          dataUrl: dataUrl,
+          frameworkUrl: "Build/Brotli.framework.js.unityweb",
+          codeUrl: "Build/Brotli.wasm.unityweb",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "svinoman",
+          productName: "Füngiman",
+          productVersion: "2.1.0",
+        };
+
+        const canvas = document.querySelector("#unity-canvas");
+        const script = document.createElement("script");
+        script.src = "Build/Brotli.loader.js";
+        script.onload = () => {
+          createUnityInstance(canvas, config).then(() => {
+            loadingText.remove();
+          }).catch(err => {
+            loadingText.textContent = "Error: " + err;
+          });
+        };
+        document.body.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,42 +1,50 @@
 [
- {
-    "id": 99000,
-    "name": "Balatro",
-    "cover": "{CRAB_COVER_URL}/balatro.png",
-    "url": "{CRAB_HTML_URL}/balatro.html",
-    "author": "LocalThunk, W0W53R",
-    "authorLink": "https://store.steampowered.com/app/2379780/Balatro/"
- }, 
- {
-    "id": 99001,
-    "name": "A Game About Feeding A Black Hole (Full)",
-    "cover": "{CRAB_COVER_URL}/AGAFABH.png",
-    "url": "{CRAB_HTML_URL}/AGAFABH.html",
-    "author": "Aarimous, Thornityco",
-    "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
- },
- {
-    "id": 99002,
-    "name": "RATSHOT Demo",
-    "cover": "{CRAB_COVER_URL}/RATSHOT.png",
-    "url": "{CRAB_HTML_URL}/RATSHOT.html",
-    "author": "Aarimous, Thornityco",
-    "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
- }, 
- {
-    "id": 99004,
-    "name": "The Legend Of Zelda: Majoras Mask",
-    "cover": "{CRAB_COVER_URL}/TLOZMM.png",
-    "url": "{CRAB_HTML_URL}/TLOZMM.html",
-    "author": "Nintendo",
-    "authorLink": "https://nintendo.com/"
- },
- {
-    "id": 99003,
-    "name": "The Legend Of Zelda: Ocarina of Time",
-    "cover": "{CRAB_COVER_URL}/TLOZOOT.png",
-    "url": "{CRAB_HTML_URL}/TLOZOOT.html",
-    "author": "Nintendo",
-    "authorLink": "https://nintendo.com/"
- }
+   {
+      "id": 99000,
+      "name": "Balatro",
+      "cover": "{CRAB_COVER_URL}/balatro.png",
+      "url": "{CRAB_HTML_URL}/balatro.html",
+      "author": "LocalThunk, W0W53R",
+      "authorLink": "https://store.steampowered.com/app/2379780/Balatro/"
+   },
+   {
+      "id": 99001,
+      "name": "A Game About Feeding A Black Hole (Full)",
+      "cover": "{CRAB_COVER_URL}/AGAFABH.png",
+      "url": "{CRAB_HTML_URL}/AGAFABH.html",
+      "author": "Aarimous, Thornityco",
+      "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
+   },
+   {
+      "id": 99002,
+      "name": "RATSHOT Demo",
+      "cover": "{CRAB_COVER_URL}/RATSHOT.png",
+      "url": "{CRAB_HTML_URL}/RATSHOT.html",
+      "author": "Aarimous, Thornityco",
+      "authorLink": "https://store.steampowered.com/app/3694480/A_Game_About_Feeding_A_Black_Hole/"
+   },
+   {
+      "id": 99800,
+      "name": "The Legend Of Zelda: Ocarina of Time",
+      "cover": "{CRAB_COVER_URL}/TLOZOOT.png",
+      "url": "{CRAB_HTML_URL}/TLOZOOT.html",
+      "author": "Nintendo",
+      "authorLink": "https://nintendo.com/"
+   },
+   {
+      "id": 98001,
+      "name": "The Legend Of Zelda: Majoras Mask",
+      "cover": "{CRAB_COVER_URL}/TLOZMM.png",
+      "url": "{CRAB_HTML_URL}/TLOZMM.html",
+      "author": "Nintendo",
+      "authorLink": "https://nintendo.com/"
+   },
+   {
+      "id": 99004,
+      "name": "Fungiman",
+      "cover": "{CRAB_COVER_URL}/Fungiman.jpg",
+      "url": "{CRAB_HTML_URL}/Fungiman.html",
+      "author": "svinoman",
+      "authorLink": "https://store.steampowered.com/app/2006330/Fungiman/"
+   }
 ]
